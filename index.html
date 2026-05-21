@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fact Wire News | Live Feed</title>
+<title>FactWire News | Live Feed</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Public+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <script>
@@ -13,14 +13,17 @@
     theme: {
       extend: {
         colors: {
-          carbon: '#0f172a',
-          wireBlue: '#2563eb',
-          wireOrange: '#f97316',
-          wireGray: '#e2e8f0',
+          ink: '#0a0a0f',
+          paper: '#f5f3ee',
+          wire: '#e63329',
+          signal: '#0057ff',
+          amber: '#f5a623',
+          mist: '#e8e5de',
         },
         fontFamily: {
-          sans: ['"Public Sans"', 'sans-serif'],
-          mono: ['"JetBrains Mono"', 'monospace'],
+          display: ['"Bebas Neue"', 'cursive'],
+          body: ['"Syne"', 'sans-serif'],
+          mono: ['"DM Mono"', 'monospace'],
         }
       }
     }
@@ -28,161 +31,300 @@
 </script>
 
 <style>
-    [x-cloak] { display: none !important; }
-    .page { display: none; }
-    .page.visible { display: block; animation: slideIn 0.3s ease-out; }
-    @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
-    
-    .wire-border { border: 2px solid #0f172a; }
-    .nav-active { background: #2563eb !important; color: white !important; }
-    
-    /* Technical scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #0f172a; }
+  * { box-sizing: border-box; }
+  body { background: #f5f3ee; font-family: 'Syne', sans-serif; }
 
-    .prose p { margin-bottom: 1.5rem; font-size: 1.1rem; line-height: 1.7; color: #334155; }
-    .prose h2 { font-weight: 800; font-size: 1.5rem; color: #0f172a; margin-top: 2rem; text-transform: uppercase; }
+  .page { display: none; }
+  .page.visible { display: block; animation: fadeUp 0.35s ease-out; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: #f5f3ee; }
+  ::-webkit-scrollbar-thumb { background: #0a0a0f; }
+
+  /* Ticker */
+  .ticker-track { display: flex; gap: 2rem; animation: ticker 28s linear infinite; white-space: nowrap; }
+  .ticker-track:hover { animation-play-state: paused; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* Cards */
+  .story-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .story-card:hover { transform: translateY(-3px); box-shadow: 6px 6px 0 #0a0a0f; }
+
+  .hero-card:hover { box-shadow: 8px 8px 0 #0057ff; transition: box-shadow 0.2s; }
+
+  /* Nav */
+  .nav-pill { transition: all 0.15s ease; }
+  .nav-pill.active, .nav-pill:hover { background: #0a0a0f; color: #f5f3ee; }
+
+  /* Prose */
+  .prose-content p { margin-bottom: 1.4rem; font-size: 1.05rem; line-height: 1.75; color: #2a2a35; }
+  .prose-content h2 { font-family: 'Bebas Neue', cursive; font-size: 2rem; color: #0a0a0f; margin-top: 2.5rem; letter-spacing: 0.03em; }
+
+  /* Mobile hamburger */
+  .mobile-menu { display: none; flex-direction: column; gap: 3rem; padding: 2rem; background: #0a0a0f; position: fixed; inset: 0; z-index: 100; overflow-y: auto; }
+  .mobile-menu.open { display: flex; animation: fadeUp 0.3s ease; }
+
+  /* Search bar focus */
+  #search-input:focus { outline: 2px solid #0057ff; outline-offset: -2px; }
+
+  /* Section label */
+  .section-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #e63329; font-weight: 500; }
+
+  /* Divider rule */
+  .ink-rule { height: 3px; background: #0a0a0f; }
+  .wire-rule { height: 2px; background: #e63329; }
+
+  /* Brief item */
+  .brief-item { border-bottom: 1px solid #e8e5de; padding-bottom: 0.9rem; cursor: pointer; }
+  .brief-item:last-child { border-bottom: none; }
+  .brief-item:hover h4 { color: #0057ff; }
+
+  /* Tag pill */
+  .tag { display: inline-block; padding: 2px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+
+  /* Image with aspect ratio */
+  .img-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* Stagger animation for lists */
+  .stagger > * { opacity: 0; animation: fadeUp 0.4s ease forwards; }
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.1s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.15s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.2s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.25s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.3s; }
+
+  @media (max-width: 640px) {
+    .hero-title { font-size: 2.2rem !important; }
+  }
 </style>
 </head>
-<body class="bg-slate-100 text-carbon font-sans">
 
-<!-- TOP DATA BAR -->
-<div class="bg-carbon text-white py-1 font-mono text-[10px] uppercase tracking-tighter overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 flex justify-between">
-        <div class="flex gap-4">
-            <span id="nav-date"></span>
-            <span class="text-wireOrange">Status: Live Data Sync</span>
-        </div>
-        <div class="hidden md:block">
-            Fact Wire News Network — Terminal v4.0.1
-        </div>
+<body class="text-ink">
+
+<!-- ═══ TICKER ═══ -->
+<div class="bg-ink text-paper overflow-hidden py-1.5" style="border-bottom: 2px solid #e63329;">
+  <div class="flex">
+    <div class="bg-wire text-white px-3 py-0.5 text-[10px] font-mono font-bold uppercase tracking-widest shrink-0 z-10 flex items-center gap-1.5">
+      <span class="inline-block w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>LIVE
     </div>
+    <div class="overflow-hidden flex-1 relative">
+      <div class="ticker-track font-mono text-[10px] tracking-wider">
+        <span class="text-amber">BREAKING:</span> <span>Live data syncing from network terminals</span>
+        <span class="text-wire mx-4">◆</span>
+        <span class="text-amber">WIRE:</span> <span>All sectors reporting — follow live updates</span>
+        <span class="text-wire mx-4">◆</span>
+        <span class="text-amber">ALERT:</span> <span>Latest dispatches now available across all categories</span>
+        <span class="text-wire mx-4">◆</span>
+        <span class="text-amber">BREAKING:</span> <span>Live data syncing from network terminals</span>
+        <span class="text-wire mx-4">◆</span>
+        <span class="text-amber">WIRE:</span> <span>All sectors reporting — follow live updates</span>
+        <span class="text-wire mx-4">◆</span>
+        <span class="text-amber">ALERT:</span> <span>Latest dispatches now available across all categories</span>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- MAIN HEADER -->
-<header class="bg-white border-b-4 border-carbon sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="flex items-center justify-between h-20">
-            <!-- Brand -->
-            <div class="flex items-center gap-3 cursor-pointer group" onclick="showPage('home');">
-                <div class="bg-wireBlue p-2">
-                    <i class="fa-solid fa-bolt-lightning text-white text-xl"></i>
-                </div>
-                <h1 class="text-3xl font-black tracking-tighter uppercase leading-none">
-                    Fact<span class="text-wireBlue">Wire</span>
-                </h1>
-            </div>
+<!-- ═══ HEADER ═══ -->
+<header class="bg-paper sticky top-0 z-50" style="border-bottom: 3px solid #0a0a0f;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
 
-            <!-- Main Nav -->
-            <nav class="hidden lg:flex items-center h-full" id="main-nav">
-                <!-- Categories injected here -->
-            </nav>
-
-            <!-- Search -->
-            <div class="flex items-center border-2 border-carbon">
-                <input type="text" id="search-input" placeholder="Keyword Search..." class="px-3 py-1.5 text-xs outline-none w-40 focus:w-60 transition-all font-mono">
-                <button class="bg-carbon text-white px-3 py-1.5"><i class="fa-solid fa-magnifying-glass text-xs"></i></button>
-            </div>
+      <!-- Logo -->
+      <div class="cursor-pointer flex items-center gap-2 shrink-0" onclick="showPage('home'); setActiveNav('home');">
+        <div class="bg-wire p-1.5 sm:p-2">
+          <i class="fa-solid fa-bolt-lightning text-white text-sm sm:text-base"></i>
         </div>
+        <span class="font-display text-2xl sm:text-3xl tracking-wide leading-none">FACT<span style="color:#0057ff;">WIRE</span></span>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-1 flex-1 justify-center" id="main-nav"></nav>
+
+      <!-- Search + Hamburger -->
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="hidden sm:flex items-center border-2 border-ink overflow-hidden">
+          <input type="text" id="search-input" placeholder="Search..." class="px-3 py-1.5 text-xs outline-none w-32 focus:w-44 transition-all bg-paper font-mono">
+          <button class="bg-ink text-paper px-3 py-1.5 shrink-0">
+            <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
+          </button>
+        </div>
+        <!-- Mobile search icon -->
+        <button class="sm:hidden bg-paper border-2 border-ink px-2 py-1.5" onclick="toggleMobileSearch()">
+          <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        </button>
+        <!-- Hamburger -->
+        <button class="lg:hidden border-2 border-ink px-2 py-1.5" onclick="toggleMenu()">
+          <i class="fa-solid fa-bars text-sm" id="menu-icon"></i>
+        </button>
+      </div>
     </div>
+
+    <!-- Mobile Search Bar -->
+    <div id="mobile-search-bar" class="hidden pb-3 sm:hidden">
+      <div class="flex items-center border-2 border-ink overflow-hidden">
+        <input type="text" id="search-input-mobile" placeholder="Search stories..." class="px-3 py-2 text-xs outline-none flex-1 bg-paper font-mono">
+        <button class="bg-ink text-paper px-3 py-2 shrink-0">
+          <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-4 py-8">
+<!-- ═══ MOBILE MENU ═══ -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="flex items-center justify-between">
+    <span class="font-display text-3xl text-paper">FACT<span style="color:#0057ff;">WIRE</span></span>
+    <button onclick="toggleMenu()" class="text-paper border border-paper/30 px-3 py-2">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <div id="mobile-nav-links" class="flex flex-col gap-2"></div>
+  <div class="mt-auto">
+    <p class="font-mono text-[10px] text-paper/40 uppercase">Terminal v4.0.1 — Live</p>
+  </div>
+</div>
 
-    <!-- HOME VIEW -->
-    <div class="page visible" id="page-home">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- LEFT: THE WIRE (News Feed) -->
-            <div class="lg:col-span-8 space-y-12">
-                <!-- PRIMARY WIRE HEADLINE -->
-                <div id="featured-hero" class="cursor-pointer group" onclick="">
-                    <!-- Injected -->
-                </div>
+<!-- ═══ MAIN ═══ -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
 
-                <!-- SECONDARY WIRE GRID -->
-                <div id="secondary-wire" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Injected -->
-                </div>
-            </div>
+  <!-- HOME -->
+  <div class="page visible" id="page-home">
 
-            <!-- RIGHT: TECHNICAL SITREP -->
-            <div class="lg:col-span-4 space-y-8">
-                <div class="wire-border bg-white p-6">
-                    <h3 class="font-black text-xs uppercase tracking-widest bg-carbon text-white inline-block px-3 py-1 mb-6">Live Briefings</h3>
-                    <div id="latest-briefs" class="space-y-6 font-mono"></div>
-                </div>
-
-                <div class="bg-wireOrange text-white p-6 shadow-[8px_8px_0px_0px_#0f172a]">
-                    <h3 class="font-black text-xs uppercase tracking-widest mb-4 border-b border-white/30 pb-2">Analysis</h3>
-                    <div id="opinion-briefs" class="space-y-4"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- GALLERY SECTION -->
-        <div class="mt-16 bg-white wire-border p-8" id="gallery-container" style="display:none">
-            <h2 class="text-2xl font-black uppercase mb-8 flex items-center gap-4">
-                Visual Archive <span class="h-1 flex-1 bg-slate-100"></span>
-            </h2>
-            <div id="event-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
-        </div>
+    <!-- Date bar -->
+    <div class="flex items-center justify-between mb-6 pb-3" style="border-bottom: 2px solid #0a0a0f;">
+      <span class="section-label" id="home-date"></span>
+      <span class="section-label text-ink/40">Fact Wire Network</span>
     </div>
 
-    <!-- CATEGORY VIEW -->
-    <div class="page" id="page-category">
-        <div class="bg-carbon text-white p-8 mb-12">
-            <h2 class="text-5xl font-black uppercase tracking-tighter" id="cat-title">Wire</h2>
-            <p class="text-wireOrange font-mono text-xs mt-2">Filtering all reports by specific sector...</p>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+
+      <!-- LEFT -->
+      <div class="lg:col-span-8 space-y-10">
+
+        <!-- Hero -->
+        <div id="featured-hero" class="hero-card border-3 cursor-pointer" style="border: 3px solid #0a0a0f;"></div>
+
+        <!-- Secondary grid -->
+        <div>
+          <div class="flex items-center gap-3 mb-5">
+            <span class="section-label">Latest Dispatches</span>
+            <div class="flex-1 wire-rule"></div>
+          </div>
+          <div id="secondary-wire" class="grid grid-cols-1 sm:grid-cols-2 gap-6 stagger"></div>
         </div>
-        <div id="category-list" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
-    </div>
+      </div>
 
-    <!-- ARTICLE VIEW -->
-    <div class="page" id="page-article">
-        <div class="max-w-4xl">
-            <button onclick="goBack()" class="mb-8 font-mono text-xs uppercase font-bold flex items-center gap-2 text-slate-500 hover:text-wireBlue">
-                <i class="fa-solid fa-chevron-left"></i> Return to Feed
-            </button>
-            
-            <div class="flex items-center gap-3 mb-6">
-                <span class="bg-wireBlue text-white px-2 py-1 text-[10px] font-bold uppercase tracking-widest" id="full-cat"></span>
-                <span class="text-slate-400 font-mono text-[10px]" id="full-meta"></span>
-            </div>
-
-            <h1 class="text-4xl md:text-6xl font-black leading-none uppercase mb-8" id="full-title"></h1>
-            
-            <div id="full-media" class="mb-10 wire-border bg-slate-200"></div>
-
-            <div class="prose max-w-none" id="full-body"></div>
+      <!-- RIGHT SIDEBAR -->
+      <div class="lg:col-span-4 space-y-6">
+        <!-- Live Briefs -->
+        <div class="bg-white p-5 sm:p-6" style="border: 2px solid #0a0a0f;">
+          <div class="flex items-center gap-3 mb-5">
+            <span class="inline-block w-2 h-2 bg-wire rounded-full animate-pulse"></span>
+            <span class="section-label text-ink">Live Briefs</span>
+          </div>
+          <div id="latest-briefs" class="space-y-4 font-mono"></div>
         </div>
+
+        <!-- Opinion / Analysis -->
+        <div class="bg-ink text-paper p-5 sm:p-6" style="border: 3px solid #0a0a0f; box-shadow: 5px 5px 0 #e63329;">
+          <div class="section-label mb-4 text-amber">Analysis + Opinion</div>
+          <div id="opinion-briefs" class="space-y-4"></div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="bg-signal text-white p-5" style="border: 3px solid #0a0a0f;">
+          <p class="font-display text-2xl tracking-wide mb-1">STAY WIRED</p>
+          <p class="text-[11px] font-mono opacity-70 mb-4">Get briefings direct to your inbox.</p>
+          <input type="email" placeholder="your@email.com" class="w-full bg-white/10 border border-white/30 px-3 py-2 text-xs mb-3 outline-none focus:border-white font-mono text-white placeholder-white/50">
+          <button class="w-full bg-white text-signal py-2 text-xs font-bold uppercase tracking-wider font-mono hover:bg-paper transition-colors">Subscribe →</button>
+        </div>
+      </div>
     </div>
 
-    <!-- SEARCH VIEW -->
-    <div class="page" id="page-search">
-        <h2 class="text-3xl font-black uppercase mb-8 border-b-4 border-carbon pb-2">Results: <span id="search-title" class="text-wireBlue"></span></h2>
-        <div id="search-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    <!-- Gallery -->
+    <div class="mt-14" id="gallery-container" style="display:none;">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="section-label">Visual Archive</span>
+        <div class="flex-1 ink-rule"></div>
+      </div>
+      <div id="event-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"></div>
     </div>
+  </div>
+
+  <!-- CATEGORY VIEW -->
+  <div class="page" id="page-category">
+    <div class="mb-8 sm:mb-10">
+      <p class="section-label mb-2">Wire Sector</p>
+      <h2 class="font-display text-5xl sm:text-7xl tracking-wide" id="cat-title">Category</h2>
+      <div class="wire-rule mt-3 w-24"></div>
+    </div>
+    <div id="category-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger"></div>
+  </div>
+
+  <!-- ARTICLE VIEW -->
+  <div class="page" id="page-article">
+    <div class="max-w-3xl mx-auto">
+      <button onclick="goBack()" class="mb-6 font-mono text-[11px] uppercase font-bold flex items-center gap-2 text-ink/50 hover:text-signal transition-colors">
+        <i class="fa-solid fa-arrow-left"></i> Back to Feed
+      </button>
+
+      <div class="flex flex-wrap items-center gap-3 mb-5">
+        <span class="tag bg-wire text-white" id="full-cat"></span>
+        <span class="font-mono text-[10px] text-ink/40" id="full-meta"></span>
+      </div>
+
+      <h1 class="font-display leading-none tracking-wide mb-6 hero-title" style="font-size: clamp(2.2rem, 6vw, 4rem);" id="full-title"></h1>
+      <div class="wire-rule mb-8 w-16"></div>
+
+      <div id="full-media" class="mb-8 overflow-hidden" style="border: 2px solid #0a0a0f;"></div>
+      <div class="prose-content" id="full-body"></div>
+    </div>
+  </div>
+
+  <!-- SEARCH VIEW -->
+  <div class="page" id="page-search">
+    <div class="mb-8">
+      <p class="section-label mb-1">Search Results</p>
+      <h2 class="font-display text-4xl sm:text-5xl tracking-wide">
+        "<span id="search-title" style="color:#0057ff;"></span>"
+      </h2>
+      <div class="ink-rule mt-3 w-16"></div>
+    </div>
+    <div id="search-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 stagger"></div>
+  </div>
 
 </main>
 
-<footer class="bg-carbon text-white pt-20 pb-10 mt-20">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-white/10 pt-12">
-        <div>
-            <h2 class="text-2xl font-black uppercase mb-4">Fact<span class="text-wireBlue">Wire</span></h2>
-            <p class="text-slate-400 text-sm leading-relaxed">The technical standard in modern journalism. We deliver raw facts, validated intelligence, and uncompromised reporting.</p>
+<!-- ═══ FOOTER ═══ -->
+<footer class="bg-ink text-paper mt-16 sm:mt-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-12">
+      <div>
+        <div class="font-display text-3xl tracking-wide mb-4">FACT<span style="color:#0057ff;">WIRE</span></div>
+        <p class="text-paper/50 text-sm leading-relaxed font-mono">The technical standard in modern journalism. Raw facts, validated intelligence, uncompromised reporting.</p>
+      </div>
+      <div>
+        <p class="section-label text-amber mb-5">Sectors</p>
+        <ul class="space-y-2 text-sm font-body font-semibold uppercase tracking-wide" id="footer-nav"></ul>
+      </div>
+      <div>
+        <p class="section-label text-amber mb-5">System Status</p>
+        <div class="space-y-3 font-mono text-[11px]">
+          <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span><span class="text-paper/60">Data feed: Active</span></div>
+          <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span><span class="text-paper/60">API sync: Live</span></div>
+          <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-amber animate-pulse"></span><span class="text-paper/60">Archive: Indexed</span></div>
         </div>
-        <div>
-            <h3 class="font-mono text-xs text-wireOrange mb-6 uppercase">System Links</h3>
-            <ul class="space-y-3 text-sm font-bold uppercase tracking-tight" id="footer-nav"></ul>
+        <div class="mt-6 border-t border-paper/10 pt-4">
+          <p class="text-paper/30 text-[10px] font-mono" id="footer-date"></p>
         </div>
-        <div class="bg-slate-800 p-6">
-            <h3 class="font-black text-xs uppercase mb-4">Newsletter.sh</h3>
-            <input type="email" placeholder="root@user.com" class="w-full bg-carbon border border-slate-700 p-2 text-xs mb-3 outline-none focus:border-wireBlue">
-            <button class="w-full bg-wireBlue py-2 text-xs font-bold uppercase">Subscribe</button>
-        </div>
+      </div>
     </div>
+  </div>
 </footer>
 
 <script>
@@ -193,166 +335,250 @@ const TARGET_SITE = "Fact Wire News";
 let articles = [];
 let events = [];
 let prevPage = 'home';
+let currentPage = 'home';
 
+// ── Boot ──────────────────────────────────────
 async function boot() {
-    try {
-        const [newsRes, eventsRes] = await Promise.all([ fetch(NEWS_API), fetch(EVENTS_API) ]);
-        const rawNews = await newsRes.json();
-        const rawEvents = await eventsRes.json();
+  const now = new Date();
+  const fmt = now.toLocaleDateString('en-UG', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('home-date').textContent = fmt;
+  document.getElementById('footer-date').textContent = 'Terminal v4.0.1 — ' + now.toISOString();
 
-        // 1. FILTER NEWS
-        articles = rawNews.filter(n => n.site && n.site.name === TARGET_SITE).map(item => ({
-            id: item.id,
-            title: item.title,
-            cat: item.category ? item.category.name : 'General',
-            image: item.image || '',
-            lede: item.lede || '',
-            body: item.body || item.lede || '',
-            date: new Date(item.created_at)
-        })).sort((a,b) => b.date - a.date);
+  try {
+    const [newsRes, eventsRes] = await Promise.all([fetch(NEWS_API), fetch(EVENTS_API)]);
+    const rawNews = await newsRes.json();
+    const rawEvents = await eventsRes.json();
 
-        // 2. FILTER EVENTS
-        events = rawEvents.filter(e => e.site && e.site.name === TARGET_SITE);
+    articles = rawNews
+      .filter(n => n.site && n.site.name === TARGET_SITE)
+      .map(item => ({
+        id: item.id,
+        title: item.title,
+        cat: item.category ? item.category.name : 'General',
+        image: item.image || '',
+        lede: item.lede || '',
+        body: item.body || item.lede || '',
+        author: item.author || 'FactWire Staff',
+        date: new Date(item.created_at)
+      }))
+      .sort((a, b) => b.date - a.date);
 
-        renderNav();
-        renderHome();
-        renderSitrep();
-        renderGallery();
-        setupSearch();
+    events = rawEvents.filter(e => e.site && e.site.name === TARGET_SITE);
 
-        document.getElementById('nav-date').textContent = new Date().toLocaleString();
-    } catch(err) { console.error('Link Terminated:', err); }
+    renderNav();
+    renderHome();
+    renderSitrep();
+    renderGallery();
+    setupSearch();
+  } catch (err) {
+    console.error('Feed error:', err);
+    showFallback();
+  }
 }
 
+function showFallback() {
+  document.getElementById('featured-hero').innerHTML = `
+    <div class="p-8 text-center">
+      <p class="font-mono text-xs text-ink/40">Unable to load feed. Check connection.</p>
+    </div>`;
+}
+
+// ── Nav ───────────────────────────────────────
 function renderNav() {
-    const nav = document.getElementById('main-nav');
-    const fnav = document.getElementById('footer-nav');
-    const cats = [...new Set(articles.map(a => a.cat))];
+  const nav = document.getElementById('main-nav');
+  const mobileNav = document.getElementById('mobile-nav-links');
+  const fnav = document.getElementById('footer-nav');
+  const cats = [...new Set(articles.map(a => a.cat))];
 
-    const homeLink = `<a href="#" class="h-full px-6 flex items-center font-black uppercase text-xs tracking-widest bg-slate-50 border-x border-slate-100 hover:bg-wireBlue hover:text-white transition-all nav-active" onclick="navTo('home', this, event)">Home</a>`;
-    
-    const catLinks = cats.map(c => `
-        <a href="#" class="h-full px-6 flex items-center font-black uppercase text-xs tracking-widest hover:bg-slate-50 border-r border-slate-100 transition-all" onclick="navTo('${c}', this, event)">${c}</a>
-    `).join('');
+  const desktopLinks = ['Home', ...cats].map((c, i) => {
+    const isHome = c === 'Home';
+    return `<button class="nav-pill px-4 py-1.5 font-body font-bold text-xs uppercase tracking-wide border border-transparent rounded-none ${i===0?'active bg-ink text-paper':''}" 
+      onclick="navTo('${isHome?'home':c}', this)">${c}</button>`;
+  }).join('');
+  nav.innerHTML = desktopLinks;
 
-    nav.innerHTML = homeLink + catLinks;
-    fnav.innerHTML = cats.map(c => `<li><a href="#" onclick="navTo('${c}', null, event)" class="hover:text-wireBlue">${c}</a></li>`).join('');
+  mobileNav.innerHTML = ['Home', ...cats].map(c => {
+    const isHome = c === 'Home';
+    return `<button class="text-paper text-left font-display text-2xl tracking-wide hover:text-amber transition-colors py-1"
+      onclick="navTo('${isHome?'home':c}', null); toggleMenu();">${c.toUpperCase()}</button>`;
+  }).join('');
+
+  fnav.innerHTML = cats.map(c =>
+    `<li><button onclick="navTo('${c}', null)" class="hover:text-signal transition-colors text-paper/60 hover:text-white">${c}</button></li>`
+  ).join('');
 }
 
+// ── Home ──────────────────────────────────────
 function renderHome() {
-    const hero = document.getElementById('featured-hero');
-    const secondary = document.getElementById('secondary-wire');
-    const news = articles.filter(a => a.cat.toLowerCase() !== 'opinion');
+  const hero = document.getElementById('featured-hero');
+  const secondary = document.getElementById('secondary-wire');
+  const news = articles.filter(a => a.cat.toLowerCase() !== 'opinion');
+  if (!news.length) return;
 
-    if (!news.length) return;
-
-    const top = news[0];
-    hero.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-0 wire-border bg-white overflow-hidden" onclick="readArticle(${top.id})">
-            <div class="md:col-span-7 h-[450px]">
-                <img src="${top.image}" class="w-full h-full object-cover">
-            </div>
-            <div class="md:col-span-5 p-8 flex flex-col justify-center border-l-2 border-carbon">
-                <span class="text-wireOrange font-mono text-xs font-bold mb-4 uppercase">[ Priority Dispatch ]</span>
-                <h2 class="text-4xl font-black uppercase leading-none mb-6 group-hover:text-wireBlue transition-colors">${top.title}</h2>
-                <p class="text-slate-500 line-clamp-3 mb-6">${top.lede}</p>
-                <div class="mt-auto font-mono text-[10px] text-slate-400">Published: ${top.date.toISOString()}</div>
-            </div>
-        </div>`;
-
-    secondary.innerHTML = news.slice(1, 5).map(a => `
-        <div class="group cursor-pointer" onclick="readArticle(${a.id})">
-            <div class="aspect-video mb-4 wire-border overflow-hidden">
-                <img src="${a.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            </div>
-            <span class="text-wireBlue font-mono text-[10px] font-bold uppercase">${a.cat}</span>
-            <h3 class="text-xl font-black uppercase leading-tight mt-1 group-hover:text-wireOrange transition-colors">${a.title}</h3>
-        </div>`).join('');
-}
-
-function renderSitrep() {
-    const briefBox = document.getElementById('latest-briefs');
-    const opinionBox = document.getElementById('opinion-briefs');
-
-    briefBox.innerHTML = articles.slice(5, 12).map(a => `
-        <div class="border-b border-slate-100 pb-4 last:border-0 cursor-pointer group" onclick="readArticle(${a.id})">
-            <div class="text-[10px] text-wireBlue mb-1 font-bold">>> ${a.cat}</div>
-            <h4 class="text-xs font-bold uppercase group-hover:underline">${a.title}</h4>
-        </div>`).join('');
-
-    const opinions = articles.filter(a => a.cat.toLowerCase() === 'opinion').slice(0, 4);
-    opinionBox.innerHTML = opinions.map(a => `
-        <div class="cursor-pointer border-b border-white/20 pb-4 last:border-0 group" onclick="readArticle(${a.id})">
-            <h4 class="text-sm font-bold uppercase leading-tight group-hover:underline">${a.title}</h4>
-            <p class="text-[10px] opacity-60 mt-1">— By ${a.author}</p>
-        </div>`).join('') || '<p class="text-xs">Archive Empty.</p>';
-}
-
-function renderGallery() {
-    if(!events.length) return;
-    document.getElementById('gallery-container').style.display = 'block';
-    document.getElementById('event-grid').innerHTML = events.slice(0,4).map(e => `
-        <div class="wire-border bg-white p-2 group cursor-pointer" onclick="navToEvents()">
-            <div class="aspect-square bg-slate-200 overflow-hidden mb-3">
-                <img src="${e.photos[0]?.photo}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all">
-            </div>
-            <h4 class="text-[10px] font-black uppercase truncate">${e.title}</h4>
-            <p class="text-[8px] font-mono text-slate-400 mt-1">${e.photos.length} FRAMES</p>
+  const top = news[0];
+  hero.innerHTML = `
+    <div class="grid grid-cols-1 md:grid-cols-2 cursor-pointer" onclick="readArticle(${top.id})">
+      <div class="aspect-[4/3] md:aspect-auto md:h-[440px] overflow-hidden">
+        <img src="${top.image}" class="img-cover hover:scale-105 transition-transform duration-700" alt="${top.title}" onerror="this.parentElement.style.background='#e8e5de'">
+      </div>
+      <div class="p-6 sm:p-8 flex flex-col justify-center bg-paper" style="border-left: 3px solid #0a0a0f;">
+        <span class="tag bg-wire text-white mb-4 self-start">Priority Dispatch</span>
+        <h2 class="font-display leading-none tracking-wide mb-5 text-ink" style="font-size: clamp(1.8rem, 4vw, 3rem);">${top.title}</h2>
+        <p class="text-sm text-ink/60 line-clamp-3 leading-relaxed mb-6 font-mono">${top.lede}</p>
+        <div class="mt-auto flex items-center justify-between">
+          <span class="font-mono text-[10px] text-ink/40">${top.date.toDateString()}</span>
+          <span class="font-mono text-[10px] text-signal flex items-center gap-1">Read Full Story <i class="fa-solid fa-arrow-right"></i></span>
         </div>
-    `).join('');
+      </div>
+    </div>`;
+
+  secondary.innerHTML = news.slice(1, 5).map(a => `
+    <div class="story-card bg-white cursor-pointer group border-2 border-ink" onclick="readArticle(${a.id})">
+      <div class="aspect-[16/9] overflow-hidden">
+        <img src="${a.image}" class="img-cover group-hover:scale-105 transition-transform duration-500" alt="${a.title}" onerror="this.style.background='#e8e5de'">
+      </div>
+      <div class="p-4">
+        <span class="tag bg-mist text-ink">${a.cat}</span>
+        <h3 class="font-display tracking-wide mt-2 text-xl leading-tight group-hover:text-signal transition-colors">${a.title}</h3>
+        <p class="text-xs text-ink/50 mt-2 line-clamp-2 font-mono leading-relaxed">${a.lede}</p>
+        <p class="font-mono text-[9px] text-ink/30 mt-3">${a.date.toDateString()}</p>
+      </div>
+    </div>`).join('');
 }
 
+// ── Sidebar ───────────────────────────────────
+function renderSitrep() {
+  const briefBox = document.getElementById('latest-briefs');
+  const opinionBox = document.getElementById('opinion-briefs');
+
+  briefBox.innerHTML = articles.slice(5, 11).map(a => `
+    <div class="brief-item group" onclick="readArticle(${a.id})">
+      <span class="font-mono text-[9px] text-wire uppercase tracking-widest">${a.cat}</span>
+      <h4 class="text-xs font-bold uppercase leading-snug mt-1 group-hover:text-signal transition-colors">${a.title}</h4>
+      <span class="font-mono text-[9px] text-ink/30">${a.date.toDateString()}</span>
+    </div>`).join('');
+
+  const opinions = articles.filter(a => a.cat.toLowerCase() === 'opinion').slice(0, 4);
+  opinionBox.innerHTML = opinions.length
+    ? opinions.map(a => `
+        <div class="cursor-pointer group pb-4 border-b border-paper/10 last:border-0" onclick="readArticle(${a.id})">
+          <h4 class="text-sm font-bold uppercase leading-tight group-hover:text-amber transition-colors">${a.title}</h4>
+          <p class="font-mono text-[10px] mt-1 opacity-50">— ${a.author}</p>
+        </div>`).join('')
+    : '<p class="font-mono text-xs opacity-40">No opinions filed.</p>';
+}
+
+// ── Gallery ───────────────────────────────────
+function renderGallery() {
+  if (!events.length) return;
+  document.getElementById('gallery-container').style.display = 'block';
+  document.getElementById('event-grid').innerHTML = events.slice(0, 4).map(e => `
+    <div class="group cursor-pointer story-card bg-white" style="border: 2px solid #0a0a0f;">
+      <div class="aspect-square overflow-hidden">
+        <img src="${e.photos?.[0]?.photo || ''}" class="img-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+          onerror="this.parentElement.style.background='#e8e5de'">
+      </div>
+      <div class="p-3">
+        <h4 class="font-mono text-[10px] font-bold uppercase truncate">${e.title}</h4>
+        <p class="font-mono text-[9px] text-ink/40 mt-0.5">${e.photos?.length ?? 0} frames</p>
+      </div>
+    </div>`).join('');
+}
+
+// ── Article ───────────────────────────────────
 function readArticle(id) {
-    const a = articles.find(x => x.id === id);
-    if (!a) return;
-    document.getElementById('full-cat').textContent = a.cat;
-    document.getElementById('full-meta').textContent = `Reporter: ${a.author} | Source: FactWire Terminal | ${a.date.toDateString()}`;
-    document.getElementById('full-title').textContent = a.title;
-    document.getElementById('full-media').innerHTML = a.image ? `<img src="${a.image}" class="w-full h-auto">` : '';
-    document.getElementById('full-body').innerHTML = a.body.includes('<p>') ? a.body : a.body.split('\n\n').map(p => `<p>${p}</p>`).join('');
-    showPage('article');
+  const a = articles.find(x => x.id === id);
+  if (!a) return;
+  prevPage = currentPage;
+  document.getElementById('full-cat').textContent = a.cat;
+  document.getElementById('full-meta').textContent = `${a.author}  ·  ${a.date.toDateString()}`;
+  document.getElementById('full-title').textContent = a.title;
+  document.getElementById('full-media').innerHTML = a.image
+    ? `<img src="${a.image}" class="w-full h-auto" alt="${a.title}">`
+    : '';
+  document.getElementById('full-body').innerHTML = a.body.includes('<p>')
+    ? a.body
+    : a.body.split('\n\n').map(p => `<p>${p}</p>`).join('');
+  showPage('article');
 }
 
-function showPage(name) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
-    document.getElementById('page-' + name).classList.add('visible');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function navTo(name, el, e) {
-    if (e) e.preventDefault();
-    if(el) {
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('nav-active'));
-        el.classList.add('nav-active');
-    }
-    if (name === 'home') { showPage('home'); return; }
-    
-    document.getElementById('cat-title').textContent = name;
-    const filtered = articles.filter(a => a.cat.toLowerCase() === name.toLowerCase());
-    document.getElementById('category-list').innerHTML = filtered.map(a => `
-        <div class="bg-white border-2 border-carbon p-5 cursor-pointer hover:shadow-[6px_6px_0px_0px_#2563eb] transition-all" onclick="readArticle(${a.id})">
-            <span class="text-wireOrange font-mono text-[10px] uppercase font-bold">${a.cat}</span>
-            <h3 class="text-xl font-black uppercase leading-tight mt-2">${a.title}</h3>
-            <p class="text-xs text-slate-500 mt-4 line-clamp-3">${a.lede}</p>
-        </div>`).join('');
-    showPage('category');
-}
-
+// ── Search ────────────────────────────────────
 function setupSearch() {
-    document.getElementById('search-input').addEventListener('input', function() {
-        const q = this.value.trim().toLowerCase();
-        if (!q) return;
-        const res = articles.filter(a => a.title.toLowerCase().includes(q));
-        document.getElementById('search-title').textContent = this.value;
-        document.getElementById('search-list').innerHTML = res.map(a => `
-            <div class="bg-white p-4 border border-carbon cursor-pointer" onclick="readArticle(${a.id})">
-                <h4 class="text-xs font-black uppercase">${a.title}</h4>
-            </div>`).join('');
-        showPage('search');
-    });
+  const handler = function() {
+    const q = this.value.trim().toLowerCase();
+    if (!q) return;
+    const res = articles.filter(a =>
+      a.title.toLowerCase().includes(q) || a.lede.toLowerCase().includes(q)
+    );
+    document.getElementById('search-title').textContent = this.value;
+    document.getElementById('search-list').innerHTML = res.length
+      ? res.map(a => `
+          <div class="bg-white story-card cursor-pointer p-5 border-2 border-ink" onclick="readArticle(${a.id})">
+            <span class="tag bg-mist text-ink">${a.cat}</span>
+            <h4 class="font-bold uppercase text-sm mt-2 leading-tight">${a.title}</h4>
+            <p class="font-mono text-[10px] text-ink/40 mt-2">${a.date.toDateString()}</p>
+          </div>`).join('')
+      : '<p class="font-mono text-sm text-ink/40 col-span-full">No stories matched your query.</p>';
+    showPage('search');
+  };
+
+  document.getElementById('search-input').addEventListener('input', handler);
+  const mob = document.getElementById('search-input-mobile');
+  if (mob) mob.addEventListener('input', handler);
+}
+
+// ── Navigation ────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
+  document.getElementById('page-' + name).classList.add('visible');
+  currentPage = name;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function navTo(name, el) {
+  document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active', 'bg-ink', 'text-paper'));
+  if (el) { el.classList.add('active', 'bg-ink', 'text-paper'); }
+  if (name === 'home') { showPage('home'); return; }
+
+  document.getElementById('cat-title').textContent = name;
+  const filtered = articles.filter(a => a.cat.toLowerCase() === name.toLowerCase());
+  document.getElementById('category-list').innerHTML = filtered.map(a => `
+    <div class="story-card bg-white cursor-pointer border-2 border-ink p-5" onclick="readArticle(${a.id})">
+      <span class="tag bg-wire text-white">${a.cat}</span>
+      <h3 class="font-display tracking-wide text-xl mt-3 leading-tight">${a.title}</h3>
+      <p class="text-xs text-ink/50 mt-3 line-clamp-2 font-mono leading-relaxed">${a.lede}</p>
+      <p class="font-mono text-[9px] text-ink/30 mt-3">${a.date.toDateString()}</p>
+    </div>`).join('');
+  showPage('category');
 }
 
 function goBack() { showPage(prevPage); }
+
+function setActiveNav(name) {
+  document.querySelectorAll('.nav-pill').forEach(b => {
+    b.classList.remove('active', 'bg-ink', 'text-paper');
+    if (b.textContent.trim().toLowerCase() === name) b.classList.add('active', 'bg-ink', 'text-paper');
+  });
+}
+
+// ── Mobile ────────────────────────────────────
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const icon = document.getElementById('menu-icon');
+  menu.classList.toggle('open');
+  icon.className = menu.classList.contains('open')
+    ? 'fa-solid fa-xmark text-sm'
+    : 'fa-solid fa-bars text-sm';
+  document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+}
+
+function toggleMobileSearch() {
+  const bar = document.getElementById('mobile-search-bar');
+  bar.classList.toggle('hidden');
+  if (!bar.classList.contains('hidden')) {
+    document.getElementById('search-input-mobile').focus();
+  }
+}
 
 boot();
 </script>
