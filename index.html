@@ -492,35 +492,80 @@ hero.innerHTML = `
   <img src="${top.image}"
        class="w-full h-[75vh] object-cover group-hover:scale-105 transition duration-700">
 
-  <div class="absolute bottom-0 left-0 z-20 p-8 sm:p-12 max-w-2xl">
+ <div class="absolute bottom-0 left-0 z-20 w-full p-5 sm:p-8 md:p-12">
 
-    <span class="tag bg-wire text-white mb-5 inline-block">
+  <!-- Content Wrapper -->
+  <div class="max-w-3xl">
+
+    <!-- Tag -->
+    <span class="inline-flex items-center gap-2 bg-wire/90 backdrop-blur-sm text-white text-[11px] sm:text-xs font-bold uppercase tracking-[0.2em] px-4 py-2 rounded-full shadow-lg mb-5">
+      <span class="w-2 h-2 bg-red-400 rounded-full animate-pulse"></span>
       Breaking Dispatch
     </span>
 
-    <h1 class="font-display text-white leading-none tracking-wide mb-4"
-        style="font-size:clamp(1rem,4vw,4rem)">
+    <!-- Headline -->
+    <h1 class="font-display text-white font-black leading-[0.95] tracking-tight mb-5 drop-shadow-2xl"
+        style="font-size:clamp(2.2rem,6vw,5.5rem)">
       ${top.title}
     </h1>
 
-    <p class="text-white/80 text-md max-w-1xl leading-relaxed mb-3">
+    <!-- Description -->
+    <p class="text-white/85 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl mb-6 sm:mb-8">
       ${top.lede}
     </p>
 
-    <div class="flex items-center gap-3">
+    <!-- Meta -->
+    <div class="flex flex-wrap items-center gap-4 sm:gap-5">
 
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-wire text-white flex items-center justify-center font-bold">
+      <!-- Author -->
+      <div class="flex items-center gap-3 bg-black/30 backdrop-blur-md border border-white/10 px-3 py-2 rounded-2xl shadow-xl">
+
+        <!-- Avatar -->
+        <div class="w-11 h-11 rounded-full bg-wire text-white flex items-center justify-center font-bold text-sm shadow-md shrink-0">
           ${top.author.charAt(0)}
         </div>
 
-        <div>
-          <p class="text-white text-sm font-semibold">${top.author}</p>
-          <p class="text-white/60 text-xs font-mono">
-            ${top.date.toDateString()}
+        <!-- Info -->
+        <div class="leading-tight">
+          <p class="text-white text-sm font-semibold">
+            ${top.author}
+          </p>
+
+          <p class="text-white/60 text-[11px] sm:text-xs uppercase tracking-wider">
+            Senior Correspondent
           </p>
         </div>
+
       </div>
+
+      <!-- Divider -->
+      <div class="hidden sm:block w-px h-8 bg-white/20"></div>
+
+      <!-- Date -->
+      <div class="flex items-center gap-2 text-white/80 text-xs sm:text-sm bg-black/30 backdrop-blur-md border border-white/10 px-4 py-3 rounded-2xl shadow-xl">
+
+        <svg xmlns="http://www.w3.org/2000/svg"
+             class="w-4 h-4 opacity-80"
+             fill="none"
+             viewBox="0 0 24 24"
+             stroke="currentColor">
+          <path stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v11a2 2 0 002 2z" />
+        </svg>
+
+        <span class="font-medium">
+          ${top.date.toDateString()}
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
       <div class="w-px h-8 bg-white/20"></div>
 
