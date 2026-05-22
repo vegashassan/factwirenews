@@ -362,8 +362,7 @@
       </h2>
       <div class="ink-rule mt-3 w-16"></div>
     </div>
-    <div id="search-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 stagger"></div>
-  </div>
+<div id="search-list" class="grid grid-cols-1 lg:grid-cols-2 gap-8 stagger"></div>  </div>
 
 </main>
 
@@ -617,28 +616,126 @@ function readArticle(id) {
 }
 
 // ── Search ────────────────────────────────────
+// ── Search ────────────────────────────────────
 function setupSearch() {
-  const handler = function() {
+
+  const handler = function () {
+
     const q = this.value.trim().toLowerCase();
-    if (!q) return;
-    const res = articles.filter(a =>
-      a.title.toLowerCase().includes(q) || a.lede.toLowerCase().includes(q)
+
+    // If search empty go home
+    if (!q) {
+      showPage('home');
+      return;
+    }
+
+    const results = articles.filter(a =>
+      a.title.toLowerCase().includes(q) ||
+      a.lede.toLowerCase().includes(q) ||
+      a.body.toLowerCase().includes(q) ||
+      a.author.toLowerCase().includes(q) ||
+      a.cat.toLowerCase().includes(q)
     );
+
     document.getElementById('search-title').textContent = this.value;
-    document.getElementById('search-list').innerHTML = res.length
-      ? res.map(a => `
-          <div class="bg-white story-card cursor-pointer p-5 border-2 border-ink" onclick="readArticle(${a.id})">
-            <span class="tag bg-mist text-ink">${a.cat}</span>
-            <h4 class="font-bold uppercase text-sm mt-2 leading-tight">${a.title}</h4>
-            <p class="font-mono text-[10px] text-ink/40 mt-2">${a.date.toDateString()}</p>
-          </div>`).join('')
-      : '<p class="font-mono text-sm text-ink/40 col-span-full">No stories matched your query.</p>';
+
+    document.getElementById('search-list').innerHTML = results.length
+
+      ? results.map(a => `
+
+      <div class="story-card bg-white border-2 border-ink overflow-hidden group cursor-pointer"
+           onclick="readArticle(${a.id})">
+
+        <!-- Image -->
+        <div class="aspect-[16/9] overflow-hidden relative">
+
+          <img src="${a.image}"
+               class="img-cover group-hover:scale-105 transition-transform duration-700"
+               alt="${a.title}"
+               onerror="this.parentElement.style.background='#e8e5de'">
+
+          <div class="absolute top-3 left-3">
+            <span class="tag bg-wire text-white">
+              ${a.cat}
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Content -->
+        <div class="p-5">
+
+          <h3 class="font-display tracking-wide text-2xl leading-tight mb-3 group-hover:text-signal transition-colors">
+            ${a.title}
+          </h3>
+
+          <p class="text-sm text-ink/60 leading-relaxed line-clamp-3 font-body mb-5">
+            ${a.lede}
+          </p>
+
+          <!-- Meta -->
+          <div class="flex items-center justify-between border-t border-ink/10 pt-4">
+
+            <div class="flex items-center gap-3">
+
+              <!-- Avatar -->
+              <div class="w-10 h-10 rounded-full bg-signal text-white flex items-center justify-center text-sm font-bold">
+                ${a.author.charAt(0)}
+              </div>
+
+              <div>
+                <p class="text-sm font-semibold leading-none">
+                  ${a.author}
+                </p>
+
+                <p class="font-mono text-[10px] text-ink/40 mt-1">
+                  ${a.date.toDateString()}
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-mono text-[10px] uppercase tracking-widest text-signal">
+              Read →
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      `).join('')
+
+      : `
+
+      <div class="col-span-full bg-white border-2 border-ink p-10 text-center">
+
+        <p class="font-display text-4xl tracking-wide mb-3">
+          No Results Found
+        </p>
+
+        <p class="font-mono text-sm text-ink/40">
+          Try another keyword or category.
+        </p>
+
+      </div>
+
+      `;
+
     showPage('search');
   };
 
-  document.getElementById('search-input').addEventListener('input', handler);
-  const mob = document.getElementById('search-input-mobile');
-  if (mob) mob.addEventListener('input', handler);
+  // Desktop search
+  document.getElementById('search-input')
+    .addEventListener('input', handler);
+
+  // Mobile search
+  const mobileSearch = document.getElementById('search-input-mobile');
+
+  if (mobileSearch) {
+    mobileSearch.addEventListener('input', handler);
+  }
 }
 
 // ── Navigation ────────────────────────────────
