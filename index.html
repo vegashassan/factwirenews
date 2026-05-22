@@ -59,8 +59,37 @@
   .nav-pill.active, .nav-pill:hover { background: #0a0a0f; color: #f5f3ee; }
 
   /* Prose */
-  .prose-content p { margin-bottom: 1.4rem; font-size: 1.05rem; line-height: 1.75; color: #2a2a35; }
-  .prose-content h2 { font-family: 'Bebas Neue', cursive; font-size: 2rem; color: #0a0a0f; margin-top: 2.5rem; letter-spacing: 0.03em; }
+.prose-content {
+  font-size: 1.12rem;
+  line-height: 1.95;
+  color: #202028;
+}
+
+.prose-content p {
+  margin-bottom: 1.8rem;
+}
+
+.prose-content h2 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 2.5rem;
+  line-height: 1;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.03em;
+}
+
+.prose-content img {
+  margin: 2rem 0;
+  border: 2px solid #0a0a0f;
+}
+
+.prose-content blockquote {
+  border-left: 4px solid #0057ff;
+  padding-left: 1.5rem;
+  font-size: 1.25rem;
+  color: #0057ff;
+  margin: 2rem 0;
+}
 
   /* Mobile hamburger */
   .mobile-menu { display: none; flex-direction: column; gap: 3rem; padding: 2rem; background: #0a0a0f; position: fixed; inset: 0; z-index: 100; overflow-y: auto; }
@@ -138,7 +167,7 @@
         <div class="bg-wire p-1.5 sm:p-2">
           <i class="fa-solid fa-bolt-lightning text-white text-sm sm:text-base"></i>
         </div>
-        <span class="font-display text-2xl sm:text-3xl tracking-wide leading-none">FACT<span style="color:#0057ff;">WIRE</span></span>
+        <span class="font-display text-2xl sm:text-3xl tracking-wide leading-none">FACT<span style="color:#0057ff;">WIRE<span style="color:#e63329;">news</span></span>
       </div>
 
       <!-- Desktop Nav -->
@@ -198,7 +227,7 @@
     <!-- Date bar -->
     <div class="flex items-center justify-between mb-6 pb-3" style="border-bottom: 2px solid #0a0a0f;">
       <span class="section-label" id="home-date"></span>
-      <span class="section-label text-ink/40">Fact Wire Network</span>
+      <span class="section-label text-ink/40">Fact Wire News</span>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
@@ -282,8 +311,46 @@
       <div class="wire-rule mb-8 w-16"></div>
 
       <div id="full-media" class="mb-8 overflow-hidden" style="border: 2px solid #0a0a0f;"></div>
-      <div class="prose-content" id="full-body"></div>
+<div class="grid lg:grid-cols-12 gap-12">
+
+  <!-- ARTICLE -->
+  <article class="lg:col-span-8">
+    <div class="prose-content max-w-none" id="full-body"></div>
+  </article>
+
+  <!-- SIDEBAR -->
+  <aside class="lg:col-span-4 space-y-6">
+
+    <div class="sticky top-28">
+
+      <div class="bg-white p-6 border-2 border-ink">
+        <p class="section-label mb-4">Reporter</p>
+
+        <div class="flex items-center gap-4">
+          <div id="author-avatar"
+               class="w-14 h-14 rounded-full bg-signal text-white flex items-center justify-center text-xl font-bold">
+          </div>
+
+          <div>
+            <h4 id="author-name" class="font-bold text-lg"></h4>
+            <p class="font-mono text-xs text-ink/40">
+              Senior Correspondent
+            </p>
+          </div>
+        </div>
+
+        <div class="wire-rule my-5"></div>
+
+        <p class="font-mono text-xs text-ink/60 leading-relaxed">
+          Reporting verified through FactWire network sources.
+        </p>
+      </div>
+
     </div>
+
+  </aside>
+
+</div>    </div>
   </div>
 
   <!-- SEARCH VIEW -->
@@ -305,7 +372,7 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-12">
       <div>
-        <div class="font-display text-3xl tracking-wide mb-4">FACT<span style="color:#0057ff;">WIRE</span></div>
+        <div class="font-display text-3xl tracking-wide mb-4">FACT<span style="color:#0057ff;">WIRE<span style="color:#e63329;">news</span></div>
         <p class="text-paper/50 text-sm leading-relaxed font-mono">The technical standard in modern journalism. Raw facts, validated intelligence, uncompromised reporting.</p>
       </div>
       <div>
@@ -416,21 +483,55 @@ function renderHome() {
   if (!news.length) return;
 
   const top = news[0];
-  hero.innerHTML = `
-    <div class="grid grid-cols-1 md:grid-cols-2 cursor-pointer" onclick="readArticle(${top.id})">
-      <div class="aspect-[4/3] md:aspect-auto md:h-[440px] overflow-hidden">
-        <img src="${top.image}" class="img-cover hover:scale-105 transition-transform duration-700" alt="${top.title}" onerror="this.parentElement.style.background='#e8e5de'">
-      </div>
-      <div class="p-6 sm:p-8 flex flex-col justify-center bg-paper" style="border-left: 3px solid #0a0a0f;">
-        <span class="tag bg-wire text-white mb-4 self-start">Priority Dispatch</span>
-        <h2 class="font-display leading-none tracking-wide mb-5 text-ink" style="font-size: clamp(1.8rem, 4vw, 3rem);">${top.title}</h2>
-        <p class="text-sm text-ink/60 line-clamp-3 leading-relaxed mb-6 font-mono">${top.lede}</p>
-        <div class="mt-auto flex items-center justify-between">
-          <span class="font-mono text-[10px] text-ink/40">${top.date.toDateString()}</span>
-          <span class="font-mono text-[10px] text-signal flex items-center gap-1">Read Full Story <i class="fa-solid fa-arrow-right"></i></span>
+hero.innerHTML = `
+<div class="relative overflow-hidden group cursor-pointer"
+     onclick="readArticle(${top.id})"
+     style="border:3px solid #0a0a0f">
+
+  <div class="absolute inset-0 bg-black/30 z-10"></div>
+
+  <img src="${top.image}"
+       class="w-full h-[75vh] object-cover group-hover:scale-105 transition duration-700">
+
+  <div class="absolute bottom-0 left-0 z-20 p-8 sm:p-12 max-w-4xl">
+
+    <span class="tag bg-wire text-white mb-5 inline-block">
+      Breaking Dispatch
+    </span>
+
+    <h1 class="font-display text-white leading-none tracking-wide mb-5"
+        style="font-size:clamp(2.8rem,6vw,6rem)">
+      ${top.title}
+    </h1>
+
+    <p class="text-white/80 text-lg max-w-2xl leading-relaxed mb-6">
+      ${top.lede}
+    </p>
+
+    <div class="flex items-center gap-4">
+
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-wire text-white flex items-center justify-center font-bold">
+          ${top.author.charAt(0)}
+        </div>
+
+        <div>
+          <p class="text-white text-sm font-semibold">${top.author}</p>
+          <p class="text-white/60 text-xs font-mono">
+            ${top.date.toDateString()}
+          </p>
         </div>
       </div>
-    </div>`;
+
+      <div class="w-px h-8 bg-white/20"></div>
+
+      <span class="text-amber font-mono text-xs uppercase tracking-widest">
+        Live Report
+      </span>
+    </div>
+
+  </div>
+</div>`;
 
   secondary.innerHTML = news.slice(1, 5).map(a => `
     <div class="story-card bg-white cursor-pointer group border-2 border-ink" onclick="readArticle(${a.id})">
@@ -441,8 +542,21 @@ function renderHome() {
         <span class="tag bg-mist text-ink">${a.cat}</span>
         <h3 class="font-display tracking-wide mt-2 text-xl leading-tight group-hover:text-signal transition-colors">${a.title}</h3>
         <p class="text-xs text-ink/50 mt-2 line-clamp-2 font-mono leading-relaxed">${a.lede}</p>
-        <p class="font-mono text-[9px] text-ink/30 mt-3">${a.date.toDateString()}</p>
-      </div>
+<div class="flex items-center justify-between mt-4">
+  <div class="flex items-center gap-2">
+    <div class="w-7 h-7 rounded-full bg-signal text-white flex items-center justify-center text-[10px] font-bold">
+      ${a.author.charAt(0)}
+    </div>
+    <div>
+      <p class="text-[11px] font-semibold leading-none">${a.author}</p>
+      <p class="font-mono text-[9px] text-ink/40 mt-1">${a.date.toDateString()}</p>
+    </div>
+  </div>
+
+  <span class="text-signal text-[10px] font-mono uppercase tracking-wider">
+    Read →
+  </span>
+</div>      </div>
     </div>`).join('');
 }
 
@@ -583,4 +697,5 @@ function toggleMobileSearch() {
 boot();
 </script>
 </body>
+
 </html>
