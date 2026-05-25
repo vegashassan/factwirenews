@@ -649,59 +649,85 @@ function renderGallery() {
 
 // ── Article ───────────────────────────────────
 function readArticle(id) {
+
   const a = articles.find(x => x.id === id);
+
   if (!a) return;
 
   prevPage = currentPage;
 
   document.getElementById('full-cat').textContent = a.cat;
+
   document.getElementById('full-meta').textContent =
     `${a.author}  ·  ${a.date.toDateString()}`;
 
   document.getElementById('full-title').textContent = a.title;
 
   document.getElementById('full-media').innerHTML = a.image
-    ? `<img src="${a.image}" class="w-full h-auto" alt="${a.title}">`
+    ? `
+      <img
+        src="${a.image}"
+        class="w-full h-auto"
+        alt="${a.title}">
+    `
     : '';
 
   document.getElementById('full-body').innerHTML = `
 
-    ${a.body.includes('<p>')
-      ? a.body
-      : a.body.split('\n\n').map(p => `<p>${p}</p>`).join('')
-    }
+    ${formatArticle(a.body)}
 
     <!-- SHARE SECTION -->
     <div class="mt-10 pt-6 border-t border-ink/10">
 
-      <p class="section-label mb-4">Share This Report</p>
+      <p class="section-label mb-4">
+        Share This Report
+      </p>
 
       <div class="flex flex-wrap gap-3">
 
-        <!-- Copy Link -->
+        <!-- COPY LINK -->
         <button
           onclick="copyArticleLink(${a.id})"
           class="bg-ink text-paper px-4 py-3 text-xs font-mono uppercase tracking-wider hover:bg-signal transition-colors">
+
           <i class="fa-solid fa-link mr-2"></i>
           Copy Link
+
         </button>
 
-        <!-- WhatsApp -->
+        <!-- WHATSAPP -->
         <a
-          href="https://wa.me/?text=${encodeURIComponent(a.title + ' - ' + window.location.href + '#article-' + a.id)}"
+          href="https://wa.me/?text=${encodeURIComponent(
+            a.title + ' - ' +
+            window.location.origin +
+            window.location.pathname +
+            '#article-' + a.id
+          )}"
+
           target="_blank"
+
           class="bg-green-600 text-white px-4 py-3 text-xs font-mono uppercase tracking-wider hover:opacity-90 transition-opacity">
+
           <i class="fa-brands fa-whatsapp mr-2"></i>
           WhatsApp
+
         </a>
 
-        <!-- Twitter/X -->
+        <!-- X / TWITTER -->
         <a
-          href="https://twitter.com/intent/tweet?text=${encodeURIComponent(a.title)}&url=${encodeURIComponent(window.location.href + '#article-' + a.id)}"
+          href="https://twitter.com/intent/tweet?text=${encodeURIComponent(a.title)}&url=${encodeURIComponent(
+            window.location.origin +
+            window.location.pathname +
+            '#article-' + a.id
+          )}"
+
           target="_blank"
+
           class="bg-black text-white px-4 py-3 text-xs font-mono uppercase tracking-wider hover:opacity-90 transition-opacity">
+
           <i class="fa-brands fa-x-twitter mr-2"></i>
           X
+
         </a>
 
       </div>
@@ -716,7 +742,6 @@ function readArticle(id) {
   document.getElementById('author-name').textContent =
     a.author;
 
-  // IMPORTANT
   showPage('article');
 }
 
@@ -731,7 +756,28 @@ const url =
   alert('Article link copied!');
 }
 
+function formatArticle(text) {
 
+  if (!text) return '';
+
+  // If body already contains HTML paragraphs
+  if (text.includes('<p>')) {
+    return text;
+  }
+
+  // Normalize line breaks
+  text = text.replace(/\r\n/g, '\n');
+
+  // Split paragraphs
+  const paragraphs = text
+    .split(/\n+/)
+    .filter(p => p.trim() !== '');
+
+  // Convert to HTML paragraphs
+  return paragraphs.map(p => `
+    <p>${p.trim()}</p>
+  `).join('');
+}
 
 // ── Search ────────────────────────────────────
 // ── Search ────────────────────────────────────
