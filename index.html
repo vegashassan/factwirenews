@@ -778,13 +778,30 @@ function readArticle(id) {
 
 function copyArticleLink(id) {
 
-const url =
-  window.location.origin +
-  window.location.pathname +
-  '#article-' + id;
-  navigator.clipboard.writeText(url);
+  const article = articles.find(a => a.id == id);
 
-  alert('Article link copied!');
+  if (!article) return;
+
+  const url =
+    window.location.origin +
+    window.location.pathname +
+    '#article-' + article.id;
+
+  const text = `📰 ${article.title}
+
+${article.lede}
+
+${'On ' + article.date.toDateString()}
+${'By ' + article.author}
+
+Read the full story:
+${url}
+
+— FactWire News`;
+
+  navigator.clipboard.writeText(text);
+
+  alert("Article details copied!");
 }
 
 function formatArticle(text) {
