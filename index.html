@@ -787,13 +787,9 @@ function copyArticleLink(id) {
     window.location.pathname +
     '#article-' + article.id;
 
-  const text = `📰 ${article.title}
-
-
-
+  const text = `${article.title}
 ${'On ' + article.date.toDateString()}
 ${'By ' + article.author}
-
 Read the full story:
 ${url}
 
