@@ -778,26 +778,13 @@ function readArticle(id) {
 
 function copyArticleLink(id) {
 
-  const article = articles.find(a => a.id == id);
+const url =
+  window.location.origin +
+  window.location.pathname +
+  '#article-' + id;
+  navigator.clipboard.writeText(url);
 
-  if (!article) return;
-
-  const url =
-    window.location.origin +
-    window.location.pathname +
-    '#article-' + article.id;
-
-  const text = `${article.title}
-${'On: ' + article.date.toDateString()}
-${'By: ' + article.author}
-Read the full story:
-${url}
-
-— FactWire News`;
-
-  navigator.clipboard.writeText(text);
-
-  alert("Article details copied!");
+  alert('Article link copied!');
 }
 
 function formatArticle(text) {
