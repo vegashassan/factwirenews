@@ -298,23 +298,11 @@
       </div>
 
       <!-- Image -->
-    <div>
-        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">
-            Visual Intel (Images)
-        </label>
-
-        <input
-            type="file"
-            id="news-image"
-            accept="image/*"
-            multiple
-            class="text-xs font-bold text-slate-500 w-full
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-xl file:border-0
-                  file:text-xs file:font-semibold
-                  file:bg-slate-100 file:text-brand
-                  hover:file:bg-slate-200">
-    </div>
+      <div>
+        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Visual Intel (Image)</label>
+        <input type="file" id="news-image" accept="image/*"
+               class="text-xs font-bold text-slate-500 w-full file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-brand hover:file:bg-slate-200">
+      </div>
 
       <!-- Publish Date -->
       <div>
@@ -810,11 +798,9 @@ async function handleSave(e, type) {
                 formData.append('category_id', catSelect.value);
             }
 
-          const images = document.getElementById('news-image').files;
+            const img = document.getElementById('news-image').files[0];
+            if (img) formData.append('image', img);
 
-          for (let i = 0; i < images.length; i++) {
-              formData.append('images[]', images[i]);
-          }
             const url = newsId ? `/news/${newsId}` : '/news';
             await apiCall(url, 'POST', formData, true);
         }
