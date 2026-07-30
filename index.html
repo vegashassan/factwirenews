@@ -59,37 +59,37 @@
   .nav-pill.active, .nav-pill:hover { background: #0a0a0f; color: #f5f3ee; }
 
   /* Prose */
-.prose-content {
-  font-size: 1.12rem;
-  line-height: 1.95;
-  color: #202028;
-}
+  .prose-content {
+    font-size: 1.12rem;
+    line-height: 1.95;
+    color: #202028;
+  }
 
-.prose-content p {
-  margin-bottom: 1.8rem;
-}
+  .prose-content p {
+    margin-bottom: 1.8rem;
+  }
 
-.prose-content h2 {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 2.5rem;
-  line-height: 1;
-  margin-top: 3rem;
-  margin-bottom: 1rem;
-  letter-spacing: 0.03em;
-}
+  .prose-content h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.03em;
+  }
 
-.prose-content img {
-  margin: 2rem 0;
-  border: 2px solid #0a0a0f;
-}
+  .prose-content img {
+    margin: 2rem 0;
+    border: 2px solid #0a0a0f;
+  }
 
-.prose-content blockquote {
-  border-left: 4px solid #0057ff;
-  padding-left: 1.5rem;
-  font-size: 1.25rem;
-  color: #0057ff;
-  margin: 2rem 0;
-}
+  .prose-content blockquote {
+    border-left: 4px solid #0057ff;
+    padding-left: 1.5rem;
+    font-size: 1.25rem;
+    color: #0057ff;
+    margin: 2rem 0;
+  }
 
   /* Mobile hamburger */
   .mobile-menu { display: none; flex-direction: column; gap: 3rem; padding: 2rem; background: #0a0a0f; position: fixed; inset: 0; z-index: 100; overflow-y: auto; }
@@ -127,6 +127,113 @@
 
   @media (max-width: 640px) {
     .hero-title { font-size: 2.2rem !important; }
+  }
+
+  /* ==========================================
+     ARTICLE IMAGE CAROUSEL & LIGHTBOX
+  ========================================== */
+
+  .carousel-viewport{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    background:#0a0a0f;
+  }
+
+  .carousel-track{
+    display:flex;
+    width:100%;
+    /* Smooth sliding transition */
+    transition:transform 0.8s cubic-bezier(.65,0,.35,1);
+  }
+
+  .carousel-slide{
+    flex:0 0 100%;
+    width:100%;
+    max-height:520px;
+    cursor: pointer;
+  }
+
+  .carousel-slide img{
+    width:100%;
+    height:100%;
+    max-height:520px;
+    object-fit:cover;
+    display:block;
+  }
+
+  .carousel-frame-tag{
+    position:absolute;
+    top:12px;
+    right:12px;
+    z-index:5;
+    background:#e63329;
+    color:#fff;
+    font-family:'DM Mono', monospace;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.12em;
+    padding:5px 10px;
+  }
+
+  .gallery-open-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 5;
+    background: rgba(10, 10, 15, 0.85);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .gallery-open-btn:hover {
+    background: #0057ff;
+    border-color: #0057ff;
+  }
+
+  .carousel-dots{
+    position:absolute;
+    bottom:12px;
+    left:0;
+    right:0;
+    z-index:5;
+    display:flex;
+    justify-content:center;
+    gap:6px;
+  }
+
+  .carousel-dot{
+    width:22px;
+    height:4px;
+    background:rgba(245,243,238,.35);
+    cursor:pointer;
+    transition:background .2s ease;
+  }
+
+  .carousel-dot.active{
+    background:#f5a623;
+  }
+
+  /* Fullscreen Gallery Lightbox */
+  #lightbox-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(8px);
+  }
+  #lightbox-modal.active {
+    display: flex;
+    flex-direction: column;
+    animation: fadeUp 0.25s ease-out;
   }
 </style>
 </head>
@@ -366,6 +473,37 @@
 
 </main>
 
+<!-- ═══ LIGHTBOX GALLERY MODAL ═══ -->
+<div id="lightbox-modal">
+  <div class="flex items-center justify-between p-4 bg-ink text-paper border-b border-white/10">
+    <div class="flex items-center gap-3">
+      <span class="tag bg-wire text-white">Interactive Gallery</span>
+      <span id="lightbox-counter" class="font-mono text-xs text-white/70">1 / 1</span>
+    </div>
+    <button onclick="closeLightbox()" class="text-white/70 hover:text-white px-3 py-1 font-mono text-xs uppercase border border-white/20 hover:border-white transition-colors">
+      <i class="fa-solid fa-xmark mr-1"></i> Close [ESC]
+    </button>
+  </div>
+
+  <div class="flex-1 relative flex items-center justify-center p-4 overflow-hidden">
+    <!-- Prev button -->
+    <button onclick="lightboxPrev()" class="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-wire text-white w-12 h-12 flex items-center justify-center text-xl transition-colors border border-white/20">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+
+    <!-- Main displayed image -->
+    <img id="lightbox-img" src="" class="max-h-[75vh] max-w-full object-contain shadow-2xl border-2 border-white/10 transition-all duration-300">
+
+    <!-- Next button -->
+    <button onclick="lightboxNext()" class="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-wire text-white w-12 h-12 flex items-center justify-center text-xl transition-colors border border-white/20">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- Thumbnails strip -->
+  <div id="lightbox-thumbs" class="p-4 bg-black/40 border-t border-white/10 flex justify-center items-center gap-2 overflow-x-auto"></div>
+</div>
+
 <!-- ═══ FOOTER ═══ -->
 <footer class="bg-ink text-paper mt-16 sm:mt-24">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
@@ -403,6 +541,14 @@ let events = [];
 let prevPage = 'home';
 let currentPage = 'home';
 
+// Article image carousel state
+let carouselTimer = null;
+let carouselImages = [];
+let carouselIndex = 0;
+
+// Lightbox state
+let lightboxIndex = 0;
+
 function absoluteMediaUrl(url) {
   if (!url) return '';
   if (/^https?:\/\//i.test(url)) return url;
@@ -439,16 +585,25 @@ async function boot() {
     ]);
 
     articles = rawNews
-      .map(item => ({
-        id: Number(item.id),
-        title: item.title || 'Untitled report',
-        cat: item.category ? item.category.name : 'General',
-        image: absoluteMediaUrl(item.image),
-        lede: item.lede || '',
-        body: item.body || item.lede || '',
-        author: item.author || 'FactWire Staff',
-        date: item.created_at ? new Date(item.created_at) : new Date()
-      }))
+      .map(item => {
+        const rawImages = (Array.isArray(item.images) && item.images.length)
+          ? item.images
+          : (item.image ? [item.image] : []);
+
+        const images = rawImages.filter(Boolean).map(absoluteMediaUrl);
+
+        return {
+          id: Number(item.id),
+          title: item.title || 'Untitled report',
+          cat: item.category ? item.category.name : 'General',
+          image: images[0] || '',
+          images: images,
+          lede: item.lede || '',
+          body: item.body || item.lede || '',
+          author: item.author || 'FactWire Staff',
+          date: item.created_at ? new Date(item.created_at) : new Date()
+        };
+      })
       .sort((a, b) => b.date - a.date);
 
     events = rawEvents.map(event => ({
@@ -677,6 +832,104 @@ function renderGallery() {
     </div>`).join('');
 }
 
+// ── Article image carousel ────────────────────
+function stopCarousel() {
+  if (carouselTimer) {
+    clearInterval(carouselTimer);
+    carouselTimer = null;
+  }
+}
+
+function goToSlide(i) {
+  carouselIndex = i;
+  const track = document.getElementById('carousel-track');
+  if (track) track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+
+  document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
+    dot.classList.toggle('active', idx === carouselIndex);
+  });
+
+  const tag = document.getElementById('carousel-frame-tag');
+  if (tag) tag.textContent = `${carouselIndex + 1} / ${carouselImages.length}`;
+}
+
+function startCarousel(images) {
+  stopCarousel();
+  carouselImages = images;
+  carouselIndex = 0;
+
+  if (images.length < 2) return;
+
+  // Speed adjusted slightly: timer set to 2500ms (2.5 seconds)
+  carouselTimer = setInterval(() => {
+    goToSlide((carouselIndex + 1) % carouselImages.length);
+  }, 2500);
+}
+
+function jumpToSlide(i) {
+  goToSlide(i);
+  if (carouselImages.length > 1) {
+    stopCarousel();
+    carouselTimer = setInterval(() => {
+      goToSlide((carouselIndex + 1) % carouselImages.length);
+    }, 2500);
+  }
+}
+
+// ── Lightbox Gallery Modal functions ──────────
+function openLightbox(startIdx = 0) {
+  if (!carouselImages.length) return;
+  lightboxIndex = startIdx;
+  
+  const modal = document.getElementById('lightbox-modal');
+  modal.classList.add('active');
+  
+  renderLightboxContent();
+  document.addEventListener('keydown', handleLightboxKeys);
+}
+
+function closeLightbox() {
+  const modal = document.getElementById('lightbox-modal');
+  modal.classList.remove('active');
+  document.removeEventListener('keydown', handleLightboxKeys);
+}
+
+function renderLightboxContent() {
+  const img = document.getElementById('lightbox-img');
+  const counter = document.getElementById('lightbox-counter');
+  const thumbs = document.getElementById('lightbox-thumbs');
+  
+  img.src = carouselImages[lightboxIndex];
+  counter.textContent = `${lightboxIndex + 1} / ${carouselImages.length}`;
+
+  thumbs.innerHTML = carouselImages.map((src, i) => `
+    <div onclick="setLightboxIndex(${i})" class="w-16 h-12 flex-shrink-0 cursor-pointer border-2 ${i === lightboxIndex ? 'border-wire scale-105' : 'border-white/20 opacity-50 hover:opacity-100'} transition-all">
+      <img src="${src}" class="w-full h-full object-cover">
+    </div>
+  `).join('');
+}
+
+function setLightboxIndex(i) {
+  lightboxIndex = i;
+  renderLightboxContent();
+}
+
+function lightboxNext() {
+  lightboxIndex = (lightboxIndex + 1) % carouselImages.length;
+  renderLightboxContent();
+}
+
+function lightboxPrev() {
+  lightboxIndex = (lightboxIndex - 1 + carouselImages.length) % carouselImages.length;
+  renderLightboxContent();
+}
+
+function handleLightboxKeys(e) {
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') lightboxNext();
+  if (e.key === 'ArrowLeft') lightboxPrev();
+}
+
 // ── Article ───────────────────────────────────
 function readArticle(id) {
 
@@ -686,6 +939,8 @@ function readArticle(id) {
 
   prevPage = currentPage;
 
+  stopCarousel();
+
   document.getElementById('full-cat').textContent = a.cat;
 
   document.getElementById('full-meta').textContent =
@@ -693,14 +948,36 @@ function readArticle(id) {
 
   document.getElementById('full-title').textContent = a.title;
 
-  document.getElementById('full-media').innerHTML = a.image
+  const images = (a.images && a.images.length) ? a.images : (a.image ? [a.image] : []);
+
+  document.getElementById('full-media').innerHTML = images.length
     ? `
-      <img
-        src="${a.image}"
-        class="w-full h-auto"
-        alt="${a.title}">
+      <div class="carousel-viewport">
+        <!-- Interactive View Gallery Button -->
+        <button class="gallery-open-btn" onclick="openLightbox(carouselIndex)">
+          <i class="fa-solid fa-expand mr-1"></i> View Gallery (${images.length})
+        </button>
+
+        <div class="carousel-track" id="carousel-track">
+          ${images.map((img, i) => `
+            <div class="carousel-slide" onclick="openLightbox(${i})">
+              <img src="${img}" alt="${a.title} — frame ${i + 1}">
+            </div>
+          `).join('')}
+        </div>
+        ${images.length > 1 ? `
+          <span class="carousel-frame-tag" id="carousel-frame-tag">1 / ${images.length}</span>
+          <div class="carousel-dots">
+            ${images.map((_, i) => `
+              <span class="carousel-dot${i === 0 ? ' active' : ''}" onclick="jumpToSlide(${i})"></span>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
     `
     : '';
+
+  startCarousel(images);
 
   document.getElementById('full-body').innerHTML = `
 
@@ -827,7 +1104,6 @@ function formatArticle(text) {
 }
 
 // ── Search ────────────────────────────────────
-// ── Search ────────────────────────────────────
 function setupSearch() {
 
   const handler = function () {
@@ -951,6 +1227,7 @@ function setupSearch() {
 
 // ── Navigation ────────────────────────────────
 function showPage(name) {
+  if (name !== 'article') stopCarousel();
   document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
   document.getElementById('page-' + name).classList.add('visible');
   currentPage = name;
